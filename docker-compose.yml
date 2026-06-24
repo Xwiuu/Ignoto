@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  tor-proxy:
+    image: dperson/torproxy
+    container_name: ignoto-tor
+    ports:
+      - "9050:9050" # Porta padrão do SOCKS5
+    environment:
+      - TOR_ExitNodes={US} # Força a saída para não misturar com seu IP local
+    networks:
+      - ignoto-net
+
+networks:
+  ignoto-net:
+    driver: bridge

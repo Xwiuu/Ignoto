@@ -1,0 +1,19 @@
+[package]
+name = "ignoto-circuits"
+version = "0.1.0"
+edition = "2021"
+description = "Zero-knowledge circuits for Ignoto Protocol."
+publish = false
+
+[dependencies]
+bellman = { version = "0.14.0", default-features = false, features = ["groth16"] }
+bls12_381 = { version = "0.8.0", default-features = false, features = ["alloc", "pairings", "bits"] }
+ff = { version = "0.13.0", default-features = false, features = ["alloc"] }
+pairing = { version = "0.23.0", default-features = false }
+rand = { version = "0.8.5", default-features = false, optional = true }
+
+[features]
+default = ["std"]
+std = [
+	"rand",
+]

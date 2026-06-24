@@ -1,0 +1,36 @@
+[package]
+name = "ignoto-runtime"
+description = "Ignoto Protocol Runtime."
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+codec = { version = "3.7.5", default-features = false, package = "parity-scale-codec" }
+scale-info = { version = "2.11.6", default-features = false }
+serde_json = { version = "1.0.132", default-features = false, features = ["alloc"] }
+
+# Polkadot SDK (using the stable umbrella crate approach)
+polkadot-sdk = { version = "2604.2.0", default-features = false, features = [
+	"pallet-balances",
+	"pallet-timestamp",
+	"pallet-transaction-payment",
+	"pallet-transaction-payment-rpc-runtime-api",
+	"runtime",
+] }
+
+[build-dependencies]
+polkadot-sdk = { version = "2604.2.0", features = ["substrate-wasm-builder"] }
+
+# Local dependencies
+pallet-ignoto = { path = "../ignoto", default-features = false }
+
+[features]
+default = ["std"]
+std = [
+	"codec/std",
+	"pallet-ignoto/std",
+	"polkadot-sdk/std",
+	"scale-info/std",
+	"serde_json/std",
+]

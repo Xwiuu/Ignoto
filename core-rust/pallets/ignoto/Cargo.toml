@@ -1,0 +1,28 @@
+[package]
+name = "pallet-ignoto"
+version = "0.1.0"
+authors = ["Ignoto Protocol Team"]
+edition = "2021"
+description = "Pallet for the Ignoto Shielded Pool (UTXO ZK)."
+publish = false
+
+[dependencies]
+codec = { version = "3.7.5", default-features = false, package = "parity-scale-codec", features = ["derive"] }
+scale-info = { version = "2.11.6", default-features = false, features = ["derive"] }
+serde = { version = "1.0.210", default-features = false, optional = true, features = ["derive"] }
+
+# Local ZK circuits dependency (enabled in std/native mode only to keep WASM target no_std clean)
+ignoto-circuits = { path = "../../circuits", default-features = false, optional = true }
+
+# Polkadot SDK (using stable umbrella crate)
+polkadot-sdk = { version = "2604.2.0", default-features = false, features = ["runtime"] }
+
+[features]
+default = ["std"]
+std = [
+	"codec/std",
+	"ignoto-circuits/std",
+	"polkadot-sdk/std",
+	"scale-info/std",
+	"serde/std",
+]

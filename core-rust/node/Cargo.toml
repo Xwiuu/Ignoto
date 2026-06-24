@@ -1,0 +1,27 @@
+[package]
+name = "ignoto-node"
+version = "0.1.0"
+authors = ["Ignoto Protocol Team"]
+edition = "2021"
+description = "High-performance minimal Substrate node for the Ignoto Protocol."
+publish = false
+
+[dependencies]
+clap = { version = "4.5.13", features = ["derive"] }
+futures = { version = "0.3.31", features = ["thread-pool"] }
+futures-timer = "3.0.2"
+jsonrpsee = { version = "0.24.10", features = ["server"] }
+log = "0.4.22"
+
+# Local dependencies: The Ignoto Runtime will reside in pallets/runtime
+ignoto-runtime = { path = "../pallets/runtime", default-features = false }
+
+# Polkadot SDK (using the stable umbrella crate approach)
+polkadot-sdk = { version = "2604.2.0", features = ["experimental", "node"] }
+
+[features]
+default = ["std"]
+std = [
+	"ignoto-runtime/std",
+	"polkadot-sdk/std",
+]

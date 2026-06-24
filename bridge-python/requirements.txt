@@ -1,0 +1,4 @@
+# Python dependencies for Ignoto bridge-python
+# requests
+# socks5
+# pysocks

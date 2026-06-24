@@ -1,0 +1,18 @@
+[workspace]
+resolver = "2"
+
+members = [
+    "node",
+    "pallets/*",
+    "circuits"
+]
+
+# Otimização extrema para o compilador não engasgar no Windows
+[profile.release]
+panic = "unwind"
+opt-level = 3
+lto = "thin"
+
+[patch.crates-io]
+core2 = { git = "https://github.com/bbqsrc/core2", rev = "545e84bcb0f235b12e21351e0c69767958efe2a7" }
+
