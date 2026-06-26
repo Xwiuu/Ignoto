@@ -11,6 +11,17 @@ services:
     networks:
       - ignoto-net
 
+  ignoto-node:
+    build:
+      context: ./core-rust
+      dockerfile: Dockerfile
+    container_name: ignoto-node
+    ports:
+      - "9944:9944" # Porta RPC do Substrate
+    command: ["--dev", "--tmp", "--rpc-external", "--rpc-cors=all"]
+    networks:
+      - ignoto-net
+
 networks:
   ignoto-net:
     driver: bridge

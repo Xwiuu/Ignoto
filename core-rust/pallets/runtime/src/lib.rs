@@ -10,6 +10,7 @@
 include!(concat!(env!("OUT_DIR"), "/wasm_binary.rs"));
 
 extern crate alloc;
+extern crate pallet_ignoto;
 
 use alloc::vec::Vec;
 use pallet_transaction_payment::{FeeDetails, RuntimeDispatchInfo};
@@ -23,6 +24,7 @@ use polkadot_sdk::{
 };
 
 /// Provides getters for genesis configuration presets.
+#[cfg(feature = "std")]
 pub mod genesis_config_presets {
 	use super::*;
 	use crate::{
@@ -289,6 +291,7 @@ impl_runtime_apis! {
 		}
 	}
 
+	#[cfg(feature = "std")]
 	impl apis::GenesisBuilder<Block> for Runtime {
 		fn build_state(config: Vec<u8>) -> sp_genesis_builder::Result {
 			build_state::<RuntimeGenesisConfig>(config)
