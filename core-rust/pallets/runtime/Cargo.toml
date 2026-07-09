@@ -18,12 +18,11 @@ polkadot-sdk = { version = "2604.2.0", default-features = false, features = [
 	"pallet-transaction-payment-rpc-runtime-api",
 	"runtime",
 ] }
+# Local dependencies
+pallet-ignoto = { path = "../ignoto", default-features = false }
 
 [build-dependencies]
 polkadot-sdk = { version = "2604.2.0", features = ["substrate-wasm-builder"] }
-
-# Local dependencies
-pallet-ignoto = { path = "../ignoto", default-features = false }
 
 [features]
 default = ["std"]

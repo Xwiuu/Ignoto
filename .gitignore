@@ -1,3 +1,9 @@
 node_modules/
 __pycache__/
 target/
+
+# Local binaries and logs
+*host-router*
+*.exe
+*.log
+*.err

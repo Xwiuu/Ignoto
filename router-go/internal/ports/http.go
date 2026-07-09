@@ -35,7 +35,6 @@ func (h *HTTPHandler) RouteTransactionHandler(w http.ResponseWriter, r *http.Req
 
 	var tx core.Transaction
 	decoder := json.NewDecoder(r.Body)
-	decoder.DisallowUnknownFields() // enforce strict payload matching
 
 	if err := decoder.Decode(&tx); err != nil {
 		h.sendJSONError(w, "Invalid transaction payload: "+err.Error(), http.StatusBadRequest)
@@ -43,15 +42,18 @@ func (h *HTTPHandler) RouteTransactionHandler(w http.ResponseWriter, r *http.Req
 	}
 
 	// Delegate processing to the core usecase
-	response, err := h.useCase.RouteTransaction(r.Context(), tx)
+	response, statusCode, err := h.useCase.RouteTransaction(r.Context(), tx)
 	if err != nil {
-		h.sendJSONError(w, "Failed to route transaction: "+err.Error(), http.StatusInternalServerError)
+		if statusCode == 0 {
+			statusCode = http.StatusInternalServerError
+		}
+		h.sendJSONError(w, "Failed to route transaction: "+err.Error(), statusCode)
 		return
 	}
 
 	// Write successful response back to the client
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(statusCode)
 	if len(response) > 0 {
 		_, _ = w.Write(response)
 	} else {

@@ -6,17 +6,17 @@ import (
 	"fmt"
 )
 
-// Transaction represents the data payload containing commitments, nullifiers, and the ZK Proof.
+// Transaction represents a generic JSON-RPC request payload.
 type Transaction struct {
-	InputsCommitment  [2]string `json:"inputs_commitment"`
-	OutputsCommitment [2]string `json:"outputs_commitment"`
-	InputsNullifier   [2]string `json:"inputs_nullifier"`
-	Proof             string    `json:"proof"`
+	JSONRPC string          `json:"jsonrpc"`
+	Method  string          `json:"method"`
+	Params  json.RawMessage `json:"params,omitempty"`
+	ID      interface{}     `json:"id,omitempty"`
 }
 
 // TorClientPort defines the outbound boundary interface (Port) for routing payloads over Tor SOCKS5 proxy.
 type TorClientPort interface {
-	Post(ctx context.Context, payload []byte) ([]byte, error)
+	Post(ctx context.Context, payload []byte) ([]byte, int, error)
 }
 
 // RouterUseCase orchestrates the routing of transactions from local ports to external networks.
@@ -32,16 +32,16 @@ func NewRouterUseCase(torClient TorClientPort) *RouterUseCase {
 }
 
 // RouteTransaction serializes the transaction and uses the Tor client port to dispatch it to the blockchain node.
-func (uc *RouterUseCase) RouteTransaction(ctx context.Context, tx Transaction) ([]byte, error) {
+func (uc *RouterUseCase) RouteTransaction(ctx context.Context, tx Transaction) ([]byte, int, error) {
 	payload, err := json.Marshal(tx)
 	if err != nil {
-		return nil, fmt.Errorf("failed to marshal transaction payload: %w", err)
+		return nil, 0, fmt.Errorf("failed to marshal transaction payload: %w", err)
 	}
 
-	response, err := uc.torClient.Post(ctx, payload)
+	response, statusCode, err := uc.torClient.Post(ctx, payload)
 	if err != nil {
-		return nil, fmt.Errorf("transaction routing use case failed: %w", err)
+		return nil, statusCode, fmt.Errorf("transaction routing use case failed: %w", err)
 	}
 
-	return response, nil
+	return response, statusCode, nil
 }

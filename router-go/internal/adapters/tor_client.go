@@ -60,27 +60,23 @@ func NewTorHTTPClient(proxyAddr string, targetURL string) (*TorHTTPClient, error
 }
 
 // Post sends a POST request with the given JSON payload to the preconfigured target URL.
-func (c *TorHTTPClient) Post(ctx context.Context, payload []byte) ([]byte, error) {
+func (c *TorHTTPClient) Post(ctx context.Context, payload []byte) ([]byte, int, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, c.targetURL, bytes.NewReader(payload))
 	if err != nil {
-		return nil, fmt.Errorf("failed to create http request: %w", err)
+		return nil, 0, fmt.Errorf("failed to create http request: %w", err)
 	}
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := c.client.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("failed to route request through Tor proxy: %w", err)
+		return nil, 0, fmt.Errorf("failed to route request through Tor proxy: %w", err)
 	}
 	defer resp.Body.Close()
 
 	respBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read response body: %w", err)
+		return nil, resp.StatusCode, fmt.Errorf("failed to read response body: %w", err)
 	}
 
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return respBytes, fmt.Errorf("target node returned non-success code %d: %s", resp.StatusCode, string(respBytes))
-	}
-
-	return respBytes, nil
+	return respBytes, resp.StatusCode, nil
 }

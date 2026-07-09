@@ -26,7 +26,7 @@ func main() {
 
 	targetNodeURL := os.Getenv("TARGET_NODE_URL")
 	if targetNodeURL == "" {
-		targetNodeURL = "http://127.0.0.1:9944" // Default Substrate/Ignoto blockchain RPC node
+		targetNodeURL = "http://ka7vtki3zksdwqgzzffuswedufqkxc7ab42f4wec325rkv7bk2ine4id.onion:80" // Tor Hidden Service on port 80
 	}
 
 	serverPort := os.Getenv("PORT")
@@ -67,8 +67,8 @@ func main() {
 	server := &http.Server{
 		Addr:         serverAddr,
 		Handler:      mux,
-		ReadTimeout:  15 * time.Second,
-		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  60 * time.Second,
+		WriteTimeout: 60 * time.Second,
 		IdleTimeout:  60 * time.Second,
 	}
 

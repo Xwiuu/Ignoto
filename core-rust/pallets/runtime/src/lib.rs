@@ -22,9 +22,6 @@ use polkadot_sdk::{
 	},
 	*,
 };
-
-/// Provides getters for genesis configuration presets.
-#[cfg(feature = "std")]
 pub mod genesis_config_presets {
 	use super::*;
 	use crate::{
@@ -256,7 +253,7 @@ impl_runtime_apis! {
 	}
 
 	impl apis::SessionKeys<Block> for Runtime {
-		fn generate_session_keys(_seed: Option<Vec<u8>>) -> Vec<u8> {
+		fn generate_session_keys(_owner: Vec<u8>, _seed: Option<Vec<u8>>) -> polkadot_sdk::sp_session::OpaqueGeneratedSessionKeys {
 			Default::default()
 		}
 
@@ -291,7 +288,6 @@ impl_runtime_apis! {
 		}
 	}
 
-	#[cfg(feature = "std")]
 	impl apis::GenesisBuilder<Block> for Runtime {
 		fn build_state(config: Vec<u8>) -> sp_genesis_builder::Result {
 			build_state::<RuntimeGenesisConfig>(config)

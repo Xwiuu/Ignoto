@@ -1,0 +1,20 @@
+AutomapHostsOnResolve 1
+ControlPort 9051
+ControlSocket /var/lib/tor/run/control
+ControlSocketsGroupWritable 1
+CookieAuthentication 1
+CookieAuthFile /var/lib/tor/run/control.authcookie
+CookieAuthFileGroupReadable 1
+DNSPort 5353
+DataDirectory /var/lib/tor
+ExitPolicy reject *:*
+Log notice stderr
+RunAsDaemon 0
+SocksPort 0.0.0.0:9050 IsolateDestAddr
+TransPort 0.0.0.0:9040
+VirtualAddrNetworkIPv4 10.192.0.0/10
+ExitNodes "{US}"
+
+# Ignoto Hidden Service config for the Rust Node
+HiddenServiceDir /var/lib/tor/ignoto_hidden_service/
+HiddenServicePort 80 ignoto-node:9944

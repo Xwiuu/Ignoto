@@ -1,10 +1,11 @@
 # Multi-stage Dockerfile to build and run the ignoto-node Substrate node on Linux
-FROM rust:slim AS builder
+FROM rust:1.91-slim AS builder
 
 ENV CARGO_NET_RETRY=10
 ENV CARGO_NET_GIT_FETCH_WITH_CLI=true
 ENV RUSTC_BOOTSTRAP=1
 ENV CARGO_UNSTABLE_JSON_TARGET_SPEC=true
+ENV CARGO_BUILD_JOBS=2
 
 
 # Install system compilation dependencies
@@ -36,17 +37,18 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry \
     --mount=type=cache,target=/usr/local/cargo/git \
     --mount=type=cache,target=/app/target \
     rm -rf /app/target/release/wbuild && \
-    (cargo build --release -p ignoto-node || (cat /app/target/release/wbuild/ignoto-runtime/Cargo.toml && exit 1))
+    (cargo build --release -p ignoto-node || (cat /app/target/release/wbuild/ignoto-runtime/Cargo.toml && exit 1)) && \
+    cp /app/target/release/ignoto-node /app/ignoto-node
 
 # Runner stage
-FROM debian:bookworm-slim
+FROM debian:trixie-slim
 
 RUN apt-get update && apt-get install -y \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-COPY --from=builder /app/target/release/ignoto-node /app/ignoto-node
+COPY --from=builder /app/ignoto-node /app/ignoto-node
 
 # Expose RPC port (Substrate default JSON-RPC port)
 EXPOSE 9944
