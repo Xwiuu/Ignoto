@@ -46,6 +46,11 @@ pub mod pallet {
 			inputs_nullifier: [[u8; 32]; 2],
 			outputs_commitment: [[u8; 32]; 2],
 		},
+		/// A shielded withdrawal to an external address was requested.
+		ShieldedWithdraw {
+			amount: u128,
+			external_address: Vec<u8>,
+		},
 	}
 
 	#[pallet::error]
@@ -109,6 +114,23 @@ pub mod pallet {
 			Self::deposit_event(Event::Transferred {
 				inputs_nullifier,
 				outputs_commitment,
+			});
+
+			Ok(())
+		}
+
+		/// Requests a shielded withdrawal to an external address (e.g. XMR/BTC).
+		#[pallet::call_index(1)]
+		pub fn shielded_withdraw(
+			origin: OriginFor<T>,
+			amount: u128,
+			external_address: Vec<u8>,
+		) -> DispatchResult {
+			ensure_signed(origin)?;
+
+			Self::deposit_event(Event::ShieldedWithdraw {
+				amount,
+				external_address,
 			});
 
 			Ok(())

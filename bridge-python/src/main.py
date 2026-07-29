@@ -1,5 +1,10 @@
+from bridge import ExitBridge
+
+
 def main():
-    print("Ignoto Bridge Worker started.")
+    bridge = ExitBridge()
+    bridge.run()
+
 
 if __name__ == "__main__":
     main()
